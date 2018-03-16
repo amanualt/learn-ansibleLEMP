@@ -1,0 +1,8 @@
+---
+- name: menginstal aplikasi yang di perlukan
+  apt: pkg={{ item }} state=latest update_cache=true
+  with_items:
+      - vim
+      - wget
+      - curl
+      - git

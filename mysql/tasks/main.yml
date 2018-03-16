@@ -1,0 +1,28 @@
+---
+
+- name: install MySQL
+  apt: pkg={{ item }} state=installed update_cache=yes
+  with_items: "{{ mysql_packages }}"
+  register: MySQLinstalled
+  notify:
+      - start MySQL
+
+- name: mengkopi templates MYSQL
+  template: src={{ item.src }} dest={{ item.dest }} owner=root group=root mode={{ item.mode | default(644) }}
+  with_items:
+    - { src: 'root.cnf', dest: '~/.my.cnf', mode: '600' }
+  notify:
+    - restart MySQL
+
+- name: mengganti MySQL root password
+  mysql_user: name=root host={{ item }} password={{ mysql_password }} config_file=~/.my.cnf state=present
+  with_items:
+    - "{{ ansible_hostname }}"
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+- name: menghapus anonymous users
+  command: 'mysql -ne "{{ item }}"'
+  with_items:
+    - DELETE FROM mysql.user WHERE User=''

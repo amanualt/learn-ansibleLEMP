@@ -1,0 +1,47 @@
+---
+
+- name: menginstal nginx-full
+  apt: name=nginx state=latest update_cache=true
+  register: nginxinstalled
+  notify:
+      - start nginx
+
+- name: menginstal nginx-extras
+  apt: name=nginx-full state=latest update_cache=false
+  notify:
+      - reload nginx
+
+- name: instalasi nginx gagal
+  when: nginxinstalled|failed
+  fail: msg="install nginx gagal, coba check logs"
+
+- name: mengkopi file virtualhost
+  when: nginxinstalled|success
+  template: src=roles/nginx/templates/virtualhost dest=/etc/nginx/sites-available/{{ domain }} mode=0640
+
+- name: membuat document root
+  when: nginxinstalled|success
+  file: dest=/var/www/{{ domain }} mode=755 state=directory owner=root group=www-data
+
+- name: hakakses root
+  when: nginxinstalled|success
+  file: dest=/var/www/{{ domain }} mode=755 state=directory owner=root group=www-data recurse=yes
+
+- name: mengecek konfigurasi nginx
+  when: nginxinstalled|success
+  command: /usr/sbin/nginx -t
+  register: nginxconfig
+
+- name: konfigurasi nginx error
+  when: nginxconfig|failed
+  fail: msg="konfigurasi nginx error, cek konfigurasimu..."
+
+- name: mematikan default virtualhost
+  when: nginxconfig|success
+  file: dest=/etc/nginx/sites-enabled/default state=absent
+
+- name: mengaktifkan web
+  when: nginxconfig|success
+  file: src=/etc/nginx/sites-available/{{ domain }} dest=/etc/nginx/sites-enabled/{{ domain }} state=link
+  notify:
+    - reload nginx

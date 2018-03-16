@@ -1,0 +1,6 @@
+---
+
+domain: domain-kamu.com
+domain_www: www.domain-kamu.com
+resolver: 8.8.8.8
+nginx_worker_processes: "{{ ansible_processor_cores }}"
