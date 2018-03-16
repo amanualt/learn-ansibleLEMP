@@ -1,0 +1,10 @@
+---
+
+ - hosts: root
+   user: root
+
+   roles:
+    - aplikasi
+    - nginx
+    - mysql
+    - php
