@@ -14,6 +14,6 @@
 - Test Ansible terlebih dahulu
   - ``` ansible root -m ping ```
   - Jika berhasil akan tampil seperti berikut
-  - ![alt tag](https://raw.githubusercontent.com/amanualt/learn-ansibleLEMP/blob/master/screen/Selection_01.png)
+  - ![alt tag](https://raw.githubusercontent.com/amanualt/learn-ansibleLEMP/master/screen/Selection_01.png)
 - Menjalankan ansible
   - ``` ansible-playbook -s master.yml ```
