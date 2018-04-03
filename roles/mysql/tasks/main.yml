@@ -1,0 +1,8 @@
+---
+
+- name: install MySQL
+  apt: pkg={{ item }} state=installed update_cache=yes
+  with_items: "{{ mysql_packages }}"
+  register: MySQLinstalled
+  notify:
+      - start MySQL

@@ -4,7 +4,7 @@
    user: root
 
    roles:
-    - aplikasi
-    - nginx
+    #- aplikasi
+    #- nginx
     - mysql
     - php
